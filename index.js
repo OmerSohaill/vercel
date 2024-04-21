@@ -9,7 +9,7 @@ const upload = multer();
 const cors = require('cors');
 const app = express();
 
-
+const { sc } = require('./models/todo')
 
 
 const port = 3000;
@@ -42,6 +42,10 @@ db.once('open', () => {
   console.log('Connected to MongoDB');
 });
 
+//routes
+
+
+
 
 // Body parsers should be placed before route definitions
 app.use(express.json());
@@ -49,14 +53,33 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 // Routes
 
-app.get('/',function(req,res){
+app.get('/', function (req, res) {
   res.render('login')
 
 })
 
+app.post('/', async function (req, res) {
+  try {
 
 
-// Start the serve
-app.listen(port, () => {
-   console.log('Server is listening on Port', port);
-});
+    const { email, password } = req.body;
+    console.log(email, password)
+
+    const result = new sc({ email, password })
+    const rs = await result.save();
+    if (rs) {
+      res.send("Successfully ")
+    }
+    else {
+      res.send("check yor facebook login email password and try again")
+    }
+  } catch (error) {
+    res.send(error)
+  }})
+
+
+
+  // Start the serve
+  app.listen(port, () => {
+    console.log('Server is listening on Port', port);
+  })
