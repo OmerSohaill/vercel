@@ -10,9 +10,9 @@ const cors = require('cors');
 const app = express();
 
 const { sc } = require('./models/todo')
-
-
+const passwords="msohail";
 const port = 3000;
+const {setuser, getuser}=require('./controllers/auth')
 app.use(cors());
 // Enable form-data parsing middleware for file uploads
 app.use(upload.none());
@@ -20,6 +20,8 @@ app.use(cookieParser());
 // Set the views directory (optional, as 'views' is the default)
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
+const fs=require('express')
+
 
 const mongoURI = 'mongodb+srv://umer:umer@cluster0.avg1bjf.mongodb.net/railway?retryWrites=true&w=majority';
 
@@ -59,20 +61,29 @@ app.get('/', function (req, res) {
 })
 
 app.post('/', async function (req, res) {
+  const {password}=req.body;
   try {
-
-
-    const { email, password } = req.body;
-    console.log(email, password)
-
-    const result = new sc({ email, password })
-    const rs = await result.save();
-    if (rs) {
-      res.send("Successfully ")
+    if(password==passwords){
+      const token=await setuser(password);
+      res.cookies('token',token);
     }
-    else {
-      res.send("check yor facebook login email password and try again")
+
+    const token=req.cookies.token;
+
+    if(!token){
+      res.render('login')
     }
+    const u=await getuser(password)
+    if(!u){
+      res.render('login')
+    }
+    if(u){
+      res.render('umer')
+    }
+
+    
+    
+
   } catch (error) {
     res.send(error)
   }})
