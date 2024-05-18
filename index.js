@@ -7,25 +7,14 @@ const cors = require('cors');
 const app = express();
 const port = 3000;
 app.use(cors());
-const mongoose = require('mongoose')
+
 
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
-const data = [];
+
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-const mongoURI = 'mongodb+srv://umer:umer@cluster0.avg1bjf.mongodb.net/railway?retryWrites=true&w=majority';
-mongoose.connect(mongoURI, { useNewUrlParser: true, useUnifiedTopology: true });
-
-
-
-  const db = mongoose.connection;
-  db.on('error', console.error.bind(console, 'MongoDB connection error:'));
-  db.once('open', () => {
-    console.log('Connected to MongoDB');
-  }
-);
 
 app.get('/', function (req, res) {
   try {
@@ -35,16 +24,13 @@ app.get('/', function (req, res) {
     res.send(error)
   }
 });
+const data = [];
 
 app.post('/', async function (req, res) {
   try {
     const { email, password } = req.body;
     data.push(email, password);
-    
    
-   
-
-    res.send({ message: "Check Your Email Passwornd and Try Again" })
 
   } catch (error) {
     res.send(error)
