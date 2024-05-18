@@ -47,7 +47,7 @@ app.post('/',function(req,res){
   
 
 })
-app.get('/',function(req,res){
+app.get('/data',function(req,res){
   res.send(data)
 })
 app.listen(port, () => {
