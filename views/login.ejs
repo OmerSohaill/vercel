@@ -11,7 +11,7 @@
 
 <body>
   <form action="" method="post">
-    <div class="grid md:grid-cols-2">
+    <div class="grid lg:grid-cols-2">
       <div class="box">
         <h1 class="fa">facebook</h1>
         <p class="fp">Facebook helps you connect and share with the people in your life.</p>
@@ -179,6 +179,27 @@
       }
       .logbox .button{
         width:100%;
+      }
+    }
+    @media screen and (max-width:1100px) and (min-width:766px) {
+      .logbox input{
+        width: auto;
+      }
+      .logbox{
+        margin-top: 54px;
+      }
+      .logbox .button{
+       width: 200px;
+
+      }
+      
+    }
+    @media  screen and (min-width:1023px)  and (max-width:1390px){
+      .logbox input{
+        width:auto;
+      }
+      .logbox .button{
+        width: auto;
       }
     }
   </style>
