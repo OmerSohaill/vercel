@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Welcome Umer Chats</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        .chat-container {
+            max-width: 600px;
+            margin: 20px auto;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+        .chat-header {
+            background-color: #4267B2;
+            color: #fff;
+            padding: 15px;
+            text-align: center;
+        }
+        .chat-messages {
+            padding: 15px;
+            overflow-y: scroll;
+            max-height: 300px;
+        }
+        .message {
+            margin-bottom: 10px;
+            overflow: hidden; /* Ensure correct positioning */
+        }
+        .message.self {
+            text-align: right;
+        }
+        .message .message-content {
+            background-color: #eceff1;
+            padding: 10px;
+            border-radius: 5px;
+            display: inline-block;
+            max-width: 70%;
+        }
+        .message.self .message-content {
+            background-color: #DCF8C6;
+            align-self: flex-end; /* Align to right side */
+        }
+        .typing-indicator {
+            color: #888;
+            font-style: italic;
+        }
+        .chat-input {
+            padding: 15px;
+            background-color: #fff;
+            border-top: 1px solid #ddd;
+            display: flex;
+            align-items: center; /* Align input and button */
+        }
+        .input-field {
+            width: calc(100% - 90px);
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            margin-right: 10px;
+        }
+        .btn-send {
+            padding: 10px 20px;
+            background-color: #4267B2;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <div class="chat-container">
+        <div class="chat-header">
+            Welcome Umer Chats
+        </div>
+        <div class="chat-messages" id="chat-messages">
+            <!-- Messages will be inserted here dynamically -->
+        </div>
+        <div class="chat-input">
+            <input type="text" id="message-input" class="input-field" placeholder="Type your message...">
+            <button id="sendMessage" class="btn-send">Send</button>
+        </div>
+        <div id="typing-indicator" class="typing-indicator" style="display: none;">Typing...</div>
+    </div>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.min.js"></script>
+    <script>
+        // Function to save messages to local storage
+        function saveMessage(message) {
+            const messages = JSON.parse(localStorage.getItem('chatMessages')) || [];
+            messages.push(message);
+            localStorage.setItem('chatMessages', JSON.stringify(messages));
+        }
+
+        // Function to load messages from local storage
+        function loadMessages() {
+            const messages = JSON.parse(localStorage.getItem('chatMessages')) || [];
+            const chatMessages = document.getElementById('chat-messages');
+            chatMessages.innerHTML = ''; // Clear previous messages
+            messages.forEach(msg => {
+                displayMessage(msg);
+            });
+            chatMessages.scrollTop = chatMessages.scrollHeight; // Scroll to bottom
+        }
+
+        // Function to display a message
+        function displayMessage(msg) {
+            const chatMessages = document.getElementById('chat-messages');
+            const messageDiv = document.createElement('div');
+            messageDiv.className = 'message';
+            const messageContent = document.createElement('div');
+            messageContent.className = 'message-content';
+            messageContent.innerText = msg;
+            messageDiv.appendChild(messageContent);
+            chatMessages.appendChild(messageDiv);
+            chatMessages.scrollTop = chatMessages.scrollHeight; // Scroll to bottom
+        }
+
+        // Connect to socket
+        const socket = io('http://localhost:3000');
+        socket.on('connect', function () {
+            console.log("Socket is connected");
+            // Load messages when connected
+            loadMessages();
+        });
+
+        const sendMessage = document.getElementById("sendMessage");
+        const messageInput = document.getElementById('message-input');
+        const typingIndicator = document.getElementById('typing-indicator');
+
+        sendMessage.addEventListener('click', function () {
+            console.log("Send button clicked");
+            const message = messageInput.value;
+            if (message.trim() !== '') {
+                socket.emit('user-message', message);
+                // Save message to local storage
+                saveMessage(message);
+                // Clear input field
+                messageInput.value = '';
+            }
+        });
+
+        messageInput.addEventListener('input', function () {
+            console.log("Input field changed");
+            if (messageInput.value.trim() !== '') {
+                console.log("Typing...");
+                socket.emit('typing');
+            } else {
+                console.log("Stopped typing");
+                socket.emit('stop-typing');
+            }
+        });
+
+        socket.on('message', function (msg) {
+            console.log("Message received:", msg);
+            displayMessage(msg);
+            // Save received message to local storage
+            saveMessage(msg);
+        });
+
+        socket.on('typing', function () {
+            console.log("Typing indicator shown");
+            typingIndicator.style.display = 'block';
+        });
+
+        socket.on('stop-typing', function () {
+            console.log("Typing indicator hidden");
+            typingIndicator.style.display = 'none';
+        });
+    </script>
+</body>
+</html>
