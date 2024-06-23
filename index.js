@@ -3,42 +3,39 @@ const express = require('express');
 const app = express();
 const path = require('path');
 const server = http.createServer(app);
+const {getuser}=require('../vercel/auth/auth')
+ const cookieParser = require('cookie-parser'); 
 
-const data=[]
 app.use(express.json())
+app.use(cookieParser());
+
+
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static(path.resolve("./public")));
-
-app.get('/', function(req, res) {
-    try{
-
-    
-    return res.sendFile(path.join(__dirname, '/public/index.html'));
-    }catch(error){
-        res.send(error)
+app.set('view engine', 'ejs');
+app.set('views', './views')
+//ALL MIDDLE WARE ARE HERE
+app.use('/login',async function(req,res){
+    const token=req.cookies.token;
+    if(!token){
+       return res.render('signup')
     }
-});
-
-app.post('/u',function(req,res){
-    try{
-
-    
-    const {email,password}=req.body;
-    data.push(email,password)
-    res.send({message:"CHECK YOUR EMAIL AND PASSWORD AND TRY AGAIN"})
-    }catch(error){
-        res.send(error)
+    const user=await getuser(token)
+    if(!user){
+        return res.render('signup')
     }
+
+  return  res.render('home')
+
 })
 
-app.get('/data',function(req,res){
-    try{
 
-        res.send(data)
-    }catch(error){
-        res.send(error)
-    }
-})
+
+
+const signin=require('../vercel/routes/signin')
+app.use('/signin',signin)
+
+
 // Socket.io
 const port = process.env.PORT || 3000;
 server.listen(port, function() {
